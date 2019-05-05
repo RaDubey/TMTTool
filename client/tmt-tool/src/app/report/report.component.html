@@ -1,0 +1,35 @@
+<br/>
+<div class="row">
+  <div class="col-lg-3">
+    <select class="form-control" [(ngModel)]="selectedShow" (change)="getDates()">
+      <option *ngFor= "let show of shows" [value]="show">
+        {{show}}
+      </option>
+    </select>
+  </div>
+  <div class="col-lg-3">
+    <select class="form-control" [(ngModel)]="selectedDate" (change)="getDemos()">
+      <option *ngFor= "let date of dates" [value]="date">
+        {{date}}
+      </option>
+    </select>
+  </div>
+  <div class="col-lg-3">
+    <select class="form-control" [(ngModel)]="selectedDemo" (change)="getCategories()">
+      <option *ngFor= "let demo of demos" [value]="demo">
+        {{demo}}
+      </option>
+    </select>
+  </div>
+  <div class="col-lg-3">
+    <select class="form-control" [(ngModel)]="selectedCategory" (change)="getData()">
+      <option *ngFor= "let category of categories" [value]="category">
+        {{category}}
+      </option>
+    </select>
+  </div>
+</div>
+<br/>
+<div class="row">
+    <div id="container" class="col-lg-12 bar-chart"></div>
+</div>
