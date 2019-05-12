@@ -29,4 +29,8 @@ export class ReportService {
     return this.httpClient.post(AppSettings.baseAPIUrl + '/data', data);
   }
 
+  getMOPData(data: any){
+    return this.httpClient.post(AppSettings.baseAPIUrl + '/mopdata', data);
+  }
+
 }

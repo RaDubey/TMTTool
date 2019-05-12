@@ -1,4 +1,5 @@
 const csvFilePath = './source.csv'
+const lineChartCSVFilePath = './lineChartSource.csv';
 const csv = require('csvtojson');
 const helpers = require('../infrastructure/helpers');
 
@@ -7,7 +8,8 @@ module.exports = {
     getDates: getDates,
     getDemos: getDemos,
     getCategories: getCategories,
-    getData: getData
+    getData: getData,
+    getMOPData: getMOPData
 }
 
 function getShows(callback) {
@@ -66,5 +68,17 @@ function getData(request, callback) {
             })
             var subCats = helpers.getUniqueValues('Sub_Cat', jsonObj);
             callback({data: jsonObj, subCats:subCats});
+        });
+}
+
+function getMOPData(request, callback) {
+    csv()
+        .fromFile(lineChartCSVFilePath)
+        .then((jsonObj) => {
+            jsonObj = jsonObj.filter(function (item) {
+                return item.Show == request.show && item.Air_Date == request.date && item.Demo == request.demo &&
+                item.Physcogenic_Cat == request.category &&  item.Sub_Cat == request.subCategory;
+            })
+            callback(jsonObj);
         });
 }

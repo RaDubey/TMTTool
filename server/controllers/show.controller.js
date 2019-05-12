@@ -5,7 +5,8 @@ module.exports = {
     getDates : getDates,
     getDemos : getDemos,
     getCategories : getCategories,
-    getData : getData
+    getData : getData,
+    getMOPData: getMOPData
 }
 
 function getShows(req, res, callback){
@@ -34,6 +35,12 @@ function getCategories(req, res, callback){
 
 function getData(req, res, callback){
     dl.getData(req.body ,function(data){
+        callback(data);
+    });
+}
+
+function getMOPData(req, res, callback){
+    dl.getMOPData(req.body ,function(data){
         callback(data);
     });
 }

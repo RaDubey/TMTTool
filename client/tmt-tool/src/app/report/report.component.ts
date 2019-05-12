@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ReportService } from "./report.service";
 import * as Highcharts from 'highcharts';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+import { MinutesChartComponent } from "./minutes-chart/minutes-chart.component";
 
 declare var require: any;
 let Boost = require('highcharts/modules/boost');
@@ -35,7 +38,7 @@ export class ReportComponent implements OnInit {
     title: {
       text: 'Impressions for the Air Date'
     },
-    subtitle:{
+    subtitle: {
       text: ''
     },
     xAxis: {},
@@ -46,11 +49,30 @@ export class ReportComponent implements OnInit {
         text: 'Impressions'
       }
     },
-    series:{}
+    plotOptions:{},
+    series: {}
   }
 
 
-  constructor(private reportService: ReportService) {
+  constructor(private reportService: ReportService, private modalService: NgbModal) {
+    var angularThis = this;
+    this.chartOptions.plotOptions = {
+      series: {
+        cursor: 'pointer',
+        events: {
+          click: function (event) {
+            const modalRef = angularThis.modalService.open(MinutesChartComponent, { size: 'lg' })
+            modalRef.componentInstance.params = {
+              show: angularThis.selectedShow,
+              demo: angularThis.selectedDemo,
+              date: angularThis.selectedDate,
+              category: angularThis.selectedCategory,
+              subCategory: event.point.category
+            }
+          }
+        }
+      }
+    };
     this.reportService.getShows().subscribe(data => {
       this.shows = data;
     })
@@ -84,7 +106,7 @@ export class ReportComponent implements OnInit {
   getData() {
     this.reportService.getData({ show: this.selectedShow, date: this.selectedDate, demo: this.selectedDemo, category: this.selectedCategory }).subscribe(data => {
       this.data = data;
-      var series = [{name:'Impressions', data:[]}];
+      var series = [{ name: 'Impressions', data: [] }];
       this.data.data.forEach(element => {
         series[0].data.push(Number.parseInt(element.Impressions));
       });

@@ -31,4 +31,10 @@ router.route('/data').post(function(req, res){
         res.send(result);
     });
 });
+
+router.route('/mopdata').post(function(req, res){
+    dataController.getMOPData(req, res , function(result){
+        res.send(result);
+    });
+});
 module.exports = router;
