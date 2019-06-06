@@ -2,7 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import * as Highcharts from 'highcharts';
 
+
 import { ReportService } from "../report.service";
+import { AppSettings } from '../../app.settings';
 
 declare var require: any;
 let Boost = require('highcharts/modules/boost');
@@ -44,7 +46,6 @@ export class MinutesChartComponent implements OnInit {
     },
     series: {}
   }
-
   constructor(private activeModal: NgbActiveModal, private reportService: ReportService) {
     this.chartOptions.xAxis = {
       title: {
@@ -63,11 +64,19 @@ export class MinutesChartComponent implements OnInit {
     return axisLabels;
   }
   ngOnInit() {
-    this.reportService.getMOPData(this.params).subscribe(data => {
+    this.reportService.getMOPData(this.params).subscribe((data: any) => {
       this.data = data;
-      var imps = this.data.map(x => Number.parseInt(x.Impressions));
-      this.chartOptions.series = [{ name: 'Impressions', data: imps, color: 'orange'}];
-      this.chartOptions.yAxis.max = Math.max.apply(Math, imps.map(function(o) { return o; }));
+      var series = []
+      data.subCats.forEach((element, index) => {
+        const subcategorydata = data.data.filter(item => {
+          return item.Sub_Cat == element;
+        });
+        var subcategoryImps = subcategorydata.map(x => Number.parseInt(x.Impressions));
+        series.push({ name: element, data: subcategoryImps, color: AppSettings.colors[element.replace(' ','')]});
+      });
+      this.chartOptions.series = series;
+      var imps = this.data.data.map(x => Number.parseInt(x.Impressions));
+      this.chartOptions.yAxis.max = Math.max.apply(Math, imps.map(function (o) { return o; }));
       Highcharts.chart('line-container', <Highcharts.Options>this.chartOptions);
     });
   }

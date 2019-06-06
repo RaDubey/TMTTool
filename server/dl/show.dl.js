@@ -16,7 +16,6 @@ function getShows(callback) {
     csv()
         .fromFile(csvFilePath)
         .then((jsonObj) => {
-            console.log(jsonObj);
             var data = helpers.getUniqueValues('Show', jsonObj)
             callback(data);
         });
@@ -62,12 +61,14 @@ function getData(request, callback) {
     csv()
         .fromFile(csvFilePath)
         .then((jsonObj) => {
+            console.log(jsonObj);
             jsonObj = jsonObj.filter(function (item) {
                 return item.Show == request.show && item.Air_Date == request.date && item.Demo == request.demo &&
                 item.Physcogenic_Cat == request.category;
             })
             var subCats = helpers.getUniqueValues('Sub_Cat', jsonObj);
-            callback({data: jsonObj, subCats:subCats});
+            var distributors = helpers.getUniqueValues('Distributor', jsonObj);
+            callback({data: jsonObj, subCats:subCats, distributors: distributors});
         });
 }
 
@@ -77,8 +78,9 @@ function getMOPData(request, callback) {
         .then((jsonObj) => {
             jsonObj = jsonObj.filter(function (item) {
                 return item.Show == request.show && item.Air_Date == request.date && item.Demo == request.demo &&
-                item.Physcogenic_Cat == request.category &&  item.Sub_Cat == request.subCategory;
+                item.Physcogenic_Cat == request.category && item.Distributor == request.distributor;
             })
-            callback(jsonObj);
+            var subCats = helpers.getUniqueValues('Sub_Cat', jsonObj);
+            callback({data: jsonObj, subCats:subCats});
         });
 }
